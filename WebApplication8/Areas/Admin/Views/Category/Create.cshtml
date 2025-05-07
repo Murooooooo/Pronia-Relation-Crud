@@ -1,9 +1,13 @@
 ﻿@model Category
-<form method="post">
-  <div class="form-group">
-    <label asp-for="Name" >Enter Name</label>
-    <input asp-for="Name" type="text" class="form-control" placeholder="Enter Name">
-  </div>
-  
-  <button type="submit" class="btn btn-primary">Submit</button>
-</form>
+<div class="container">
+	<div class="row" >
+        <form method="post">
+            <div class="form-group">
+                <label asp-for="Name">Enter Name</label>
+                <input asp-for="Name" type="text" class="form-control" placeholder="Enter Name">
+            </div>
+
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+</div>

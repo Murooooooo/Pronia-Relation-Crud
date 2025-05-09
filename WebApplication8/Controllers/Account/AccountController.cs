@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Threading.Tasks;
 using WebApplication8.Areas.ViewModels.Account;
 using WebApplication8.Models;
@@ -25,7 +26,7 @@ namespace WebApplication8.Controllers.Account
         [HttpPost]
         public async Task<IActionResult> Register(RegisterVM registerVM)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return View();
             }
@@ -37,21 +38,49 @@ namespace WebApplication8.Controllers.Account
             {
                 Name = registerVM.Name,
                 UserName = registerVM.UserName,
-                Email=registerVM.Email
+                Email = registerVM.Email
             };
 
-           var result=await _userManager.CreateAsync(appUser,registerVM.Password);
-            if(!result.Succeeded)
+            var result = await _userManager.CreateAsync(appUser, registerVM.Password);
+            if (!result.Succeeded)
             {
-                foreach(var item in result.Errors)
+                foreach (var item in result.Errors)
                 {
                     ModelState.AddModelError("", item.Description);
                 }
                 return View();
             }
-            await _signManager.SignInAsync(appUser, true);
-            return RedirectToAction("Index","Home");
+
+            return RedirectToAction("Login", "Account");
         }
+
+        public IActionResult Login()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Login(LoginVM loginVM)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View();
+            }
+            AppUser user = await _userManager.FindByEmailAsync(loginVM.UserNameOrEmail);
+            if (user == null)
+            {
+                user = await _userManager.FindByNameAsync(loginVM.UserNameOrEmail);
+                if (user == null)
+                {
+                    ModelState.AddModelError("", "Username ve ya password sevhdir");
+                    return View(loginVM);
+                }
+             var result= await _signManager.PasswordSignInAsync(user, loginVM.Password,loginVM.RememberMe,false);
+            }
+            return RedirectToAction("Index", "Home");
+        }
+
+
         public async Task<IActionResult> LogOut()
         {
             await _signManager.SignOutAsync();

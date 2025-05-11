@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using WebApplication8.DAL;
 using WebApplication8.Models;
 
 namespace WebApplication8.Controllers;
@@ -7,15 +8,17 @@ namespace WebApplication8.Controllers;
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
-
-    public HomeController(ILogger<HomeController> logger)
+    private readonly AppDbContext _context;
+    public HomeController(ILogger<HomeController> logger, AppDbContext context)
     {
         _logger = logger;
+        _context = context;
     }
 
     public IActionResult Index()
     {
-        return View();
+       var category= _context.Categories.ToList();
+        return View(category);
     }
 
     public IActionResult Privacy()

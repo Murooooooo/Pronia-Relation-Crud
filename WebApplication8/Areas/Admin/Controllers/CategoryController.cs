@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using WebApplication8.DAL;
 using WebApplication8.Models;
 
 namespace WebApplication8.Areas.Admin.Controllers
 {
     [Area("Admin")]
+  
     public class CategoryController : Controller
     {
         private readonly AppDbContext _context;

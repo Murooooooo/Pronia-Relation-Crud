@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using System.Threading.Tasks;
-using WebApplication8.Areas.ViewModels.Account;
 using WebApplication8.Models;
+using WebApplication8.ViewModels;
+using WebApplication8.ViewModels.Account;
 
 namespace WebApplication8.Controllers.Account
 {
@@ -11,11 +10,13 @@ namespace WebApplication8.Controllers.Account
     {
         UserManager<AppUser> _userManager;
         SignInManager<AppUser> _signManager;
+        RoleManager<IdentityRole> _roleManager;
 
-        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signManager)
+        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signManager, RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _signManager = signManager;
+            _roleManager = roleManager;
         }
 
         public IActionResult Register()
@@ -60,7 +61,7 @@ namespace WebApplication8.Controllers.Account
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login(LoginVM loginVM)
+        public async Task<IActionResult> Login(LoginVm loginVM)
         {
             if (!ModelState.IsValid)
             {
@@ -75,7 +76,7 @@ namespace WebApplication8.Controllers.Account
                     ModelState.AddModelError("", "Username ve ya password sevhdir");
                     return View(loginVM);
                 }
-             var result= await _signManager.PasswordSignInAsync(user, loginVM.Password,loginVM.RememberMe,false);
+                var result = await _signManager.PasswordSignInAsync(user, loginVM.Password, loginVM.RememberMe, false);
             }
             return RedirectToAction("Index", "Home");
         }
